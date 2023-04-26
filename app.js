@@ -33,9 +33,14 @@ app.get("/home", (req, res) => {
     res.render("home")
 })
 
-app.get("/campgrounds", async (req, res) => {
-    const campgrounds = await Campground.find({})
-    res.render("campgrounds/index", {campgrounds})
+app.get("/campgrounds", async (req, res, next) => {
+    try {
+           const campgrounds = await Campground.find({})
+    res.render("campgrounds/index", {campgrounds}) 
+    } catch(e){
+        next(e);
+    }
+
 })
 
 app.get("/campgrounds/new", (req,res)=>{
@@ -71,7 +76,9 @@ app.delete("/campgrounds/:id", async (req,res)=>{
     res.redirect("/campgrounds");
 })
 
-
+app.use((err,req,res,next)=>{
+    res.send("oh boy, something went wrong")
+})
 
 app.listen(3000, () => {
     console.log("listening on port 3000")
